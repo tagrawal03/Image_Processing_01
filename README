@@ -1,0 +1,107 @@
+EE569 Homework Assignment 1
+Name: Taruna Agrawal
+Date: September 20th
+Email: tagrawal@usc.edu
+
+Compiled on UBUNTU 14.04 with g++
+g++ version: g++ (Ubuntu 4.8.4-2ubuntu1~14.04) 4.8.4
+********************************************************************************
+IMPORTANT NOTES
+---------------
+1) Please included *.raw images in same directory as *.cpp files before executing the code
+
+********************************************************************************
+FILES INCLUDED AND FUNCTIONALTIES
+---------------------------------
+1)image_proc.cpp - Contains all functions that are common for all the programs.
+2)image_proc.h - Header file for class Image.
+3)Makefile - Commands for compilation and execustion of all files
+4)Problem1_Resize.cpp - Contains implementaion of resizing problem.
+5)Problem1_DemosaicLinear.cpp - Contains implementation of demoasaicing using linear interpolation.
+6)Problem1_DemosaicMHP.cpp - Contains implmentaion of demosaicing using MHP technique.
+7)Problem2_histEqTF.cpp - Histogram Equalization using transfer function approach.
+8)Problem2_histEqCPH.cpp - Histogram Equalization using Cumulative probabilty method.
+9)Problem2_oilpainting.cpp - Implementation of oil painting effect on image using 64 colors.
+10)Problem2-oilpainting512color.cpp - Implementation of oil painting effect on image using 512 colors.
+11)Problem3_MedianNoiserem.cpp - Removal of impulse noise from noisy image.
+12)Problem3_bilatFiltering.cpp - Removal of gaussian nosie using bilateral filter.
+13)Problem3_imageGuided.cpp - Removal of noise using guided image filtering.
+14)README
+
+********************************************************************************
+STEPS TO RUN THE PROGRAM
+------------------------
+1) Unzip the folder and check if all files mentioned above are present in the folder.
+2) Run the following commands from the folder which contains Makefile
+   make clean
+   make all
+3) Some programs require command line inputs, please provide the inputs based on requirement.
+4) You should see self explanatory messages on screen.
+
+********************************************************************************
+DETAILED DESCRIPTION OF IMPLEMENTATION
+-------------------------------------- 
+1) Problem1_Resize.cpp
+-----------------------
+Bilinear interpolation technique is used in this problem.
+Step1: Consider 2*2 block of image on each channel
+Step2:Find interpolation value using the below formula:
+F(p’,q’) = (1-a)*(1-b)*F(p,q) + b*(1-a)*F(p,q+1) + a*(1-b)*F(p+1,q) + a*b*F(p+1,q+1)
+step3: Repeat step1 and step2 for whole image.
+
+2) Problem1_DomosaicLinear.cpp
+------------------------------
+Step1: Extend the image from all four sides by two rows/columns.
+Step2: For each pixel in CFA image take average of four adjacent pixels of same color.
+Step3: Step 2 will give R, G , B values for each pixel.
+
+3) Problem1_DemosaicMHP.cpp
+----------------------------
+Step1: Extend the image from all sides by two rows/columns.
+Step2: on each pixel apply the formula as mentioned in the report or homework document.
+Step3: Step 2 will give R, G , B values for each pixel
+
+4) Problem2_histEqTF.cpp
+--------------------------
+Step 1: Obtain a histogram of the image as shown.
+Step 2 : Calculate cumulative histogram and store values of Y axis on text file.
+Step 3: Calculate cumulative distribution function also called as transfer function by dividing the values obtained in step 2 with total number of pixels (width*height).
+Step4: Multiply the values obtained in step 3 with 255 (max intensity level - min intensity level).
+Step 5: For each pixel check which intensity bin they fall into. Replace the pixel value with the value in intensity bin.
+
+5) Problem2_histEqCPH.cpp
+--------------------------
+Step 1: Scan the full image for intensity value 0 and store the coordinates of pixels having intensity 0 in an array.
+Step 2: Repeat step 1 for intensity levels 1 to 255 and keep appending at the  array the pixels coordinates corresponding to intensity value.
+Step 3: At the end of step 2 all the pixel locations will be stored in an array with start of array containing pixel locations having intensity 0 and end of array containing pixel locations 255.
+Step 4: Divide the whole array into 256 blocks with successive block assigned intensity value ranging from 0 to 255. All the pixels which fall in say block 1 will be assigned value 0 irrespective of their previous intensity value. Similarly do the same for other blocks too.
+Step 5: At the end of step 4 all intensities will have equal number of pixels thus obtaining flat histogram.
+
+6) Problem2_oilpainting.cpp Problem2_oilpainting512.cpp
+--------------------------------------------------------
+Step 1: Quantize image to 64 levels using cumulative histogram method. In this method plot the cumulative histogram for each channel then select the intensity bin which has 25%, 50%, 75%, 100% pixels respectively. Take the mid value of these bins as quantized value. Figure 10.1 and 10.2 shows quantized barn.raw and coliseum.raw. 
+Step 2: Based on window size extend the image from all sides using reflection of pixels.
+Step 3: Since quantization is already done on the image, all three channels should be treated as one. In order to achieve that I have stored the value of RGB channels as 24 bit value, where first 8 bits are red channel value, next 8 bits are green channel value and last 8 bits are blue channel value. 
+Step 4: Now program would ask the user to input the size of Window-value N. A window of size N*N will be considered around the pixel of interest. For window of size N*N calculate the frequency of each pixel value and store that in a two dimensional array. Search this array for the most frequent pixel value and store the coordinates of that particular pixel. The resultant image should have the value of this particular pixel.
+Repeating this process for entire image will make sure that surrounding pixels will have same value, when there is not much difference among them.
+
+7) Problem3_MedianNoiseRem.cpp
+------------------------------
+Step 1: Choose window of size N and extend the image from all sides based on window size.
+Step 2: Now consider a block of size N*N in noisy image such that middle pixel of block is the pixel for which we need the output value. Arrange the value of N*N block in increasing order and choose the middle value.
+Step3: Replace median value in output image.
+Step4: Repeat step 2-4 for whole image.
+
+8) Problem3_bilatFiltering.cpp
+------------------------------
+Step 1: Choose window size N and extend the image based on N.
+Step 2: Input value of σs and σr.
+Step3: Now consider a block of size N*N in noisy image such that middle pixel of block is the pixel for which we need the output value. Apply the formula for bilateral filtering as mentioned in report (approach and procedure section) to find the value for resultant pixel.
+Step4: Repeat step 2-4 for whole image
+ 
+9) Problem3_imageGuided.cpp
+---------------------------
+Step 1: Choose window size N and extend the image based on N.
+Step 2: Input value of epsilon.
+Step3: Use the same algoriithm as mentioned in report.
+
